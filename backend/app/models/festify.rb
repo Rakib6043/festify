@@ -1,0 +1,2 @@
+class Festify < ApplicationRecord
+end
