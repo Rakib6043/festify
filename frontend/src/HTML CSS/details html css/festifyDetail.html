@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>作品詳細</title>
+  <link rel="stylesheet" href="details.css">
+</head>
+<body>
+
+  <div class="detail-container">
+
+    <h1>作品詳細</h1>
+
+    <div class="image-block">
+      <h2>作品画像</h2>
+      <img src="detail image/about_img_01.jpg" alt="作品画像" class="main-image">
+    </div>
+
+   
+    <p><strong>作成者名：</strong> 田中 太郎</p>
+
+   
+    <p><strong>作品名：</strong> 春の風景</p>
+
+   
+    <p><strong>学科：</strong> ビジュアルデザイン学科</p>
+
+    <p><strong>学年：</strong> 3年</p>
+
+  
+    <p><strong>説明：</strong><br>
+      この作品は春の自然をテーマにした風景画です。デジタルペイントとアナログ技法を融合させました。
+    </p>
+
+    <p><strong>展示場所：</strong> 本館3階ギャラリー</p>
+
+   
+    <div class="image-block">
+      <h2>展示場所画像</h2>
+      <img src="detail image/about_img_01.jpg" alt="展示場所画像" class="location-image">
+    </div>
+
+  
+    <button onclick="confirmDelete()">この作品を削除</button>
+
+  </div>
+
+  <script>
+    function confirmDelete() {
+      if (confirm("本当にこの作品を削除しますか？")) {
+        alert("削除処理を実行（※実際の機能は別途実装が必要）");
+      }
+    }
+  </script>
+
+</body>
+</html>
+
+
+
+
+
+
+
