@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="Edit.css" />
+    <title>Edit</title>
+  </head>
+  <body>
+    <div class="EditSection">
+      <form class="container">
+        <h1>新規作成と編集画面UI</h1>
+        <div class="form-group">
+          <label>作品の画像:</label>
+          <div class="images">
+            <label for="image-upload" class="add-image-button"> + </label>
+            <label for="image-upload" class="add-image-button"> + </label>
+            <label for="image-upload" class="add-image-button"> + </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="work-title">作品名:</label>
+          <input type="text" />
+        </div>
+
+        <div class="form-group">
+          <label for="creator-name">作成者名:</label>
+          <input type="text" />
+        </div>
+
+        <div class="form-group">
+          <label>学科:</label>
+          <div class="radio-group">
+            <div class="radio-option">
+              <input type="radio" value="デザイン科" checked />
+              <label for="dep-design">デザイン科</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" value="IT科" />
+              <label for="dep-it">IT科</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>学年:</label>
+          <div class="radio-group">
+            <div class="radio-option">
+              <input type="radio" value="1年" checked />
+              <label for="grade-1">1年</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" value="2年" />
+              <label for="grade-2">2年</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="description">説明:</label>
+          <textarea id="description" rows="5"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="location">展示場所(画像):</label>
+          <label for="image-upload" class="add-image-button location">
+            +
+          </label>
+          <label for="location">展示場所(文字):</label>
+          <input type="text" />
+        </div>
+
+        <div class="action-button">
+          <button class="btn">追加/更新</button>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>
