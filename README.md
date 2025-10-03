@@ -107,8 +107,18 @@ npm run build          # Production build
 ### デバッグ
 
 ```javascript
-// Browser console でテスト
-testConnection.runAllTests(); // 接続テスト
+// Browser console で簡単にテスト
+fetch('http://localhost:3000/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify({
+        session: {
+            email: 'test@example.com',
+            password: 'password123'
+        }
+    })
+}).then(res => res.json()).then(console.log);
 ```
 
 ## 📝 API エンドポイント
