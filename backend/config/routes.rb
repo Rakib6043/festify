@@ -6,7 +6,7 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
-      # Lệnh này tự động tạo ra tất cả các route RESTful chuẩn cho Festify
+      # This automatically creates all RESTful routes for Festify
       # GET    /api/v1/festifies
       # POST   /api/v1/festifies
       # GET    /api/v1/festifies/:id

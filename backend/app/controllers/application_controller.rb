@@ -3,8 +3,8 @@ class ApplicationController < ActionController::API
   
   protected 
 
-  # ログインしているユーザーを検索して返す（存在する場合）
-  # この論理はsession-based authを使用する場合でも正しく動作します
+  # Find and return the currently logged in user (if exists)
+  # This logic works correctly when using session-based auth
   def current_user
     return @current_user if defined?(@current_user)
     
@@ -19,13 +19,13 @@ class ApplicationController < ActionController::API
     @current_user
   end
 
-  # ユーザーがログインしているかどうかを確認する
+  # Check if user is logged in
   def logged_in?
     current_user.present?
   end
 
-  # ユーザーがログインする必要があることを要求するメソッド
-  # redirectの代わりにJSONエラーを返すように修正済み
+  # Method to require user to be logged in
+  # Modified to return JSON error instead of redirect
   def login_required
     unless logged_in?
       Rails.logger.warn "Unauthorized access attempt - user not logged in"

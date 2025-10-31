@@ -7,7 +7,7 @@ class User < ApplicationRecord
 
   before_save { self.email = email.downcase }
   
-  
+  # Find user by email (case insensitive)
   def self.find_by_email(email)
     find_by(email: email.downcase)
   end

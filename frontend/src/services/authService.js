@@ -1,7 +1,7 @@
 const API_BASE_URL = "http://localhost:3000"; // Backend Rails server URL
 
 const authService = {
-  // Đăng nhập
+  // Login
   login: async (credentials) => {
     try {
       const response = await fetch(`${API_BASE_URL}/login`, {
@@ -9,7 +9,7 @@ const authService = {
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include", // Để gửi cookies session
+        credentials: "include", // To send session cookies
         body: JSON.stringify({
           session: {
             email: credentials.email,
@@ -21,16 +21,16 @@ const authService = {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "ログインに失敗しました");
+        throw new Error(data.message || "Login failed");
       }
 
       return data;
     } catch (error) {
-      throw new Error(error.message || "ネットワークエラーが発生しました");
+      throw new Error(error.message || "Network error occurred");
     }
   },
 
-  // Đăng xuất
+  // Logout
   logout: async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/logout`, {
@@ -42,16 +42,16 @@ const authService = {
       });
 
       if (!response.ok) {
-        throw new Error("ログアウトに失敗しました");
+        throw new Error("Logout failed");
       }
 
       return { success: true };
     } catch (error) {
-      throw new Error(error.message || "ネットワークエラーが発生しました");
+      throw new Error(error.message || "Network error occurred");
     }
   },
 
-  // Kiểm tra trạng thái đăng nhập
+  // Check login status
   checkLoginStatus: async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/logged_in`, {
@@ -65,12 +65,12 @@ const authService = {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error("ログイン状態の確認に失敗しました");
+        throw new Error("Failed to check login status");
       }
 
       return data;
     } catch (error) {
-      throw new Error(error.message || "ネットワークエラーが発生しました");
+      throw new Error(error.message || "Network error occurred");
     }
   },
 };

@@ -8,7 +8,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Kiểm tra trạng thái đăng nhập khi ứng dụng khởi động
+  // Check login status when application starts
   useEffect(() => {
     checkAuthStatus();
   }, []);
@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }) => {
         setIsAuthenticated(false);
       }
     } catch (error) {
-      console.error("認証状態の確認エラー:", error);
+      console.error("Authentication status check error:", error);
       setUser(null);
       setIsAuthenticated(false);
     } finally {
@@ -43,8 +43,8 @@ export const AuthProvider = ({ children }) => {
       setUser(null);
       setIsAuthenticated(false);
     } catch (error) {
-      console.error("ログアウト中にエラーが発生しました:", error);
-      // サーバーでエラーが発生してもローカルの状態をクリアする
+      console.error("Logout error occurred:", error);
+      // Clear local state even if server error occurs
       setUser(null);
       setIsAuthenticated(false);
     }

@@ -1,9 +1,12 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
-import "./Dashboard.css";
+import FestifyList from "./FestifyList";
+import AdminFestify from "./AdminFestify";
+import "../styles/Dashboard.css";
 
 const Dashboard = () => {
   const { user, logout } = useContext(AuthContext);
+  const [currentView, setCurrentView] = useState("dashboard"); // 'dashboard', 'festifyList', 'adminFestify'
 
   const handleLogout = async () => {
     try {
@@ -13,6 +16,54 @@ const Dashboard = () => {
       console.error("Logout error:", error);
     }
   };
+
+  // Show FestifyList if currentView is 'festifyList'
+  if (currentView === "festifyList") {
+    return (
+      <div>
+        <div className="dashboard-header">
+          <h1>Festify システム</h1>
+          <div style={{ display: "flex", gap: "10px" }}>
+            <button
+              onClick={() => setCurrentView("dashboard")}
+              className="logout-button"
+              style={{ background: "#666" }}
+            >
+              ダッシュボードに戻る
+            </button>
+            <button onClick={handleLogout} className="logout-button">
+              ログアウト
+            </button>
+          </div>
+        </div>
+        <FestifyList />
+      </div>
+    );
+  }
+
+  // Show AdminFestify if currentView is 'adminFestify'
+  if (currentView === "adminFestify") {
+    return (
+      <div>
+        <div className="dashboard-header">
+          <h1>Festify 管理システム</h1>
+          <div style={{ display: "flex", gap: "10px" }}>
+            <button
+              onClick={() => setCurrentView("dashboard")}
+              className="logout-button"
+              style={{ background: "#666" }}
+            >
+              ダッシュボードに戻る
+            </button>
+            <button onClick={handleLogout} className="logout-button">
+              ログアウト
+            </button>
+          </div>
+        </div>
+        <AdminFestify onBack={() => setCurrentView("dashboard")} />
+      </div>
+    );
+  }
 
   return (
     <div className="dashboard-container">
@@ -47,10 +98,16 @@ const Dashboard = () => {
         <div className="actions-card">
           <h3>クイックアクション</h3>
           <div className="action-buttons">
-            <button className="action-button primary">
-              新しいFestifyを作成
+            <button
+              className="action-button primary"
+              onClick={() => setCurrentView("adminFestify")}
+            >
+              管理者画面
             </button>
-            <button className="action-button secondary">
+            <button
+              className="action-button secondary"
+              onClick={() => setCurrentView("festifyList")}
+            >
               Festifyリストを表示
             </button>
             <button className="action-button secondary">アカウント設定</button>

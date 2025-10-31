@@ -1,6 +1,6 @@
 .dashboard-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: #f4f4f4;
   padding: 20px;
 }
 
@@ -8,11 +8,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: white;
+  background: #f5f3eb;
   padding: 20px 30px;
   border-radius: 15px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
   margin-bottom: 30px;
+  border: 2px solid #e91e63;
 }
 
 .dashboard-header h1 {
@@ -23,7 +24,7 @@
 }
 
 .logout-button {
-  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+  background: #e91e63;
   color: white;
   border: none;
   padding: 12px 24px;
@@ -36,7 +37,8 @@
 
 .logout-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(238, 90, 82, 0.3);
+  box-shadow: 0 8px 20px rgba(233, 30, 99, 0.3);
+  background: #d81b60;
 }
 
 .dashboard-content {
@@ -49,10 +51,11 @@
 
 .welcome-card,
 .actions-card {
-  background: white;
+  background: #f5f3eb;
   border-radius: 15px;
   padding: 30px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  border: 2px solid #e91e63;
 }
 
 .welcome-card h2,
@@ -68,16 +71,16 @@
 }
 
 .welcome-card p {
-  color: #666;
+  color: #333;
   line-height: 1.6;
   margin-bottom: 25px;
 }
 
 .user-info {
-  background: #f8f9fa;
+  background: white;
   padding: 20px;
   border-radius: 10px;
-  border-left: 4px solid #667eea;
+  border-left: 4px solid #e91e63;
 }
 
 .user-info h3 {
@@ -88,7 +91,7 @@
 
 .user-info p {
   margin: 8px 0;
-  color: #555;
+  color: #333;
 }
 
 .user-info strong {
@@ -113,25 +116,26 @@
 }
 
 .action-button.primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #e91e63;
   color: white;
 }
 
 .action-button.primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 10px 25px rgba(233, 30, 99, 0.3);
+  background: #d81b60;
 }
 
 .action-button.secondary {
-  background: #f8f9fa;
+  background: white;
   color: #333;
-  border: 2px solid #e9ecef;
+  border: 2px solid #e91e63;
 }
 
 .action-button.secondary:hover {
-  background: #e9ecef;
-  border-color: #667eea;
-  color: #667eea;
+  background: #e91e63;
+  border-color: #e91e63;
+  color: white;
 }
 
 /* Responsive Design */

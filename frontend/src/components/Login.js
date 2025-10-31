@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import authService from "../services/authService";
-import "./Login.css";
+import "../styles/Login.css";
 
 const Login = () => {
   const [formData, setFormData] = useState({

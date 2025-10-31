@@ -69,9 +69,11 @@ class Api::V1::FestifiesController < ActionController::API
       :creator,
       :department,
       :grade,
-      :place_text
-      # Thêm các thuộc tính khác của bạn ở đây, ví dụ:
-      # :image1, :image2, :image3, :place_image
+      :place_text,
+      :image1,
+      :image2,
+      :image3,
+      :place_image
     )
   end
 end
