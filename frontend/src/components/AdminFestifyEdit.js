@@ -18,6 +18,10 @@ const AdminFestifyEdit = ({ festify, onSave, onCancel }) => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [imagePreview1, setImagePreview1] = useState("");
+  const [imagePreview2, setImagePreview2] = useState("");
+  const [imagePreview3, setImagePreview3] = useState("");
+  const [placeImagePreview, setPlaceImagePreview] = useState("");
 
   useEffect(() => {
     if (festify) {
@@ -34,6 +38,11 @@ const AdminFestifyEdit = ({ festify, onSave, onCancel }) => {
         image3: festify.image3 || "",
         place_image: festify.place_image || "",
       });
+      // Set existing image previews
+      setImagePreview1(festify.image1 || "");
+      setImagePreview2(festify.image2 || "");
+      setImagePreview3(festify.image3 || "");
+      setPlaceImagePreview(festify.place_image || "");
     }
   }, [festify]);
 
@@ -43,6 +52,60 @@ const AdminFestifyEdit = ({ festify, onSave, onCancel }) => {
       ...prev,
       [name]: value,
     }));
+  };
+
+  const handleImageChange = (e, imageNumber) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith("image/")) {
+        setError("画像ファイルを選択してください");
+        return;
+      }
+
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        setError("ファイルサイズは5MB以下にしてください");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result;
+        
+        if (imageNumber === 1) {
+          setImagePreview1(base64String);
+          setFormData((prev) => ({ ...prev, image1: base64String }));
+        } else if (imageNumber === 2) {
+          setImagePreview2(base64String);
+          setFormData((prev) => ({ ...prev, image2: base64String }));
+        } else if (imageNumber === 3) {
+          setImagePreview3(base64String);
+          setFormData((prev) => ({ ...prev, image3: base64String }));
+        } else if (imageNumber === "place") {
+          setPlaceImagePreview(base64String);
+          setFormData((prev) => ({ ...prev, place_image: base64String }));
+        }
+        setError("");
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeImage = (imageNumber) => {
+    if (imageNumber === 1) {
+      setImagePreview1("");
+      setFormData((prev) => ({ ...prev, image1: "" }));
+    } else if (imageNumber === 2) {
+      setImagePreview2("");
+      setFormData((prev) => ({ ...prev, image2: "" }));
+    } else if (imageNumber === 3) {
+      setImagePreview3("");
+      setFormData((prev) => ({ ...prev, image3: "" }));
+    } else if (imageNumber === "place") {
+      setPlaceImagePreview("");
+      setFormData((prev) => ({ ...prev, place_image: "" }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -112,56 +175,109 @@ const AdminFestifyEdit = ({ festify, onSave, onCancel }) => {
         <div className="form-group">
           <label>作品の画像:</label>
           <div className="images">
+            {/* Image 1 */}
             <div className="image-input-wrapper">
-              <label className="add-image-label">画像1 URL</label>
-              <input
-                type="text"
-                name="image1"
-                value={formData.image1}
-                onChange={handleInputChange}
-                placeholder="画像1のURLを入力"
-              />
-              {formData.image1 && (
-                <img
-                  src={formData.image1}
-                  alt="Preview 1"
-                  className="image-preview"
-                />
+              <label className="add-image-label">画像1</label>
+              {!imagePreview1 ? (
+                <label htmlFor="image1-upload" className="file-upload-label">
+                  <div className="upload-placeholder">
+                    <span className="upload-icon">+</span>
+                    <span className="upload-text">画像を選択</span>
+                  </div>
+                </label>
+              ) : (
+                <div className="image-preview-container">
+                  <img
+                    src={imagePreview1}
+                    alt="Preview 1"
+                    className="image-preview"
+                  />
+                  <button
+                    type="button"
+                    className="remove-image-btn"
+                    onClick={() => removeImage(1)}
+                  >
+                    ×
+                  </button>
+                </div>
               )}
+              <input
+                type="file"
+                id="image1-upload"
+                accept="image/*"
+                onChange={(e) => handleImageChange(e, 1)}
+                style={{ display: "none" }}
+              />
             </div>
+
+            {/* Image 2 */}
             <div className="image-input-wrapper">
-              <label className="add-image-label">画像2 URL</label>
-              <input
-                type="text"
-                name="image2"
-                value={formData.image2}
-                onChange={handleInputChange}
-                placeholder="画像2のURLを入力"
-              />
-              {formData.image2 && (
-                <img
-                  src={formData.image2}
-                  alt="Preview 2"
-                  className="image-preview"
-                />
+              <label className="add-image-label">画像2</label>
+              {!imagePreview2 ? (
+                <label htmlFor="image2-upload" className="file-upload-label">
+                  <div className="upload-placeholder">
+                    <span className="upload-icon">+</span>
+                    <span className="upload-text">画像を選択</span>
+                  </div>
+                </label>
+              ) : (
+                <div className="image-preview-container">
+                  <img
+                    src={imagePreview2}
+                    alt="Preview 2"
+                    className="image-preview"
+                  />
+                  <button
+                    type="button"
+                    className="remove-image-btn"
+                    onClick={() => removeImage(2)}
+                  >
+                    ×
+                  </button>
+                </div>
               )}
+              <input
+                type="file"
+                id="image2-upload"
+                accept="image/*"
+                onChange={(e) => handleImageChange(e, 2)}
+                style={{ display: "none" }}
+              />
             </div>
+
+            {/* Image 3 */}
             <div className="image-input-wrapper">
-              <label className="add-image-label">画像3 URL</label>
-              <input
-                type="text"
-                name="image3"
-                value={formData.image3}
-                onChange={handleInputChange}
-                placeholder="画像3のURLを入力"
-              />
-              {formData.image3 && (
-                <img
-                  src={formData.image3}
-                  alt="Preview 3"
-                  className="image-preview"
-                />
+              <label className="add-image-label">画像3</label>
+              {!imagePreview3 ? (
+                <label htmlFor="image3-upload" className="file-upload-label">
+                  <div className="upload-placeholder">
+                    <span className="upload-icon">+</span>
+                    <span className="upload-text">画像を選択</span>
+                  </div>
+                </label>
+              ) : (
+                <div className="image-preview-container">
+                  <img
+                    src={imagePreview3}
+                    alt="Preview 3"
+                    className="image-preview"
+                  />
+                  <button
+                    type="button"
+                    className="remove-image-btn"
+                    onClick={() => removeImage(3)}
+                  >
+                    ×
+                  </button>
+                </div>
               )}
+              <input
+                type="file"
+                id="image3-upload"
+                accept="image/*"
+                onChange={(e) => handleImageChange(e, 3)}
+                style={{ display: "none" }}
+              />
             </div>
           </div>
         </div>
@@ -279,21 +395,36 @@ const AdminFestifyEdit = ({ festify, onSave, onCancel }) => {
         {/* Location */}
         <div className="form-group">
           <label htmlFor="place_image">展示場所(画像):</label>
-          <input
-            type="text"
-            id="place_image"
-            name="place_image"
-            value={formData.place_image}
-            onChange={handleInputChange}
-            placeholder="展示場所の画像URLを入力"
-          />
-          {formData.place_image && (
-            <img
-              src={formData.place_image}
-              alt="Location Preview"
-              className="image-preview location-preview"
-            />
+          {!placeImagePreview ? (
+            <label htmlFor="place-image-upload" className="file-upload-label">
+              <div className="upload-placeholder">
+                <span className="upload-icon">+</span>
+                <span className="upload-text">場所画像を選択</span>
+              </div>
+            </label>
+          ) : (
+            <div className="image-preview-container">
+              <img
+                src={placeImagePreview}
+                alt="Location Preview"
+                className="image-preview location-preview"
+              />
+              <button
+                type="button"
+                className="remove-image-btn"
+                onClick={() => removeImage("place")}
+              >
+                ×
+              </button>
+            </div>
           )}
+          <input
+            type="file"
+            id="place-image-upload"
+            accept="image/*"
+            onChange={(e) => handleImageChange(e, "place")}
+            style={{ display: "none" }}
+          />
 
           <label htmlFor="place_text" style={{ marginTop: "15px" }}>
             展示場所(文字):
