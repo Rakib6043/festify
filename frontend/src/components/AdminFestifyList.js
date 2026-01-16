@@ -1,11 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
+import { Pencil, Trash2, QrCode } from "lucide-react";
 import festifyService from "../services/festifyService";
+import QRCodeModal from "./QRCodeModal";
 import "../styles/AdminFestifyList.css";
 
 const AdminFestifyList = ({ onEdit, onViewDetails, onBack }) => {
+  const { user } = useContext(AuthContext);
   const [festifies, setFestifies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [selectedQR, setSelectedQR] = useState(null);
 
   useEffect(() => {
     loadFestifies();
@@ -42,6 +47,20 @@ const AdminFestifyList = ({ onEdit, onViewDetails, onBack }) => {
     if (onEdit) {
       onEdit(null); // null means create new
     }
+  };
+
+  const isAuthorizedToEdit = (festify) => {
+    if (!user) return false;
+    if (user.role === 'admin') return true;
+    if (user.role === 'class_rep') {
+        return festify.department === user.department && festify.grade === parseInt(user.grade, 10);
+    }
+    return false;
+  };
+
+  const isAuthorizedToDelete = (festify) => {
+      // Typically only admins delete, or class rep deletes own.  Matching backend logic.
+      return isAuthorizedToEdit(festify);
   };
 
   if (loading) {
@@ -146,17 +165,30 @@ const AdminFestifyList = ({ onEdit, onViewDetails, onBack }) => {
                   </td>
                   <td>
                     <div className="action-buttons">
+                      {isAuthorizedToEdit(festify) && (
+                        <button
+                            className="icon-btn edit"
+                            onClick={() => onEdit && onEdit(festify)}
+                            title="編集"
+                        >
+                            <Pencil size={18} />
+                        </button>
+                      )}
+                      {isAuthorizedToDelete(festify) && (
+                        <button
+                            className="icon-btn delete"
+                            onClick={() => handleDelete(festify.id)}
+                            title="削除"
+                        >
+                            <Trash2 size={18} />
+                        </button>
+                      )}
                       <button
-                        className="edit"
-                        onClick={() => onEdit && onEdit(festify)}
+                        className="icon-btn qr"
+                        onClick={() => setSelectedQR(festify)}
+                        title="QRコード表示"
                       >
-                        編集
-                      </button>
-                      <button
-                        className="delete"
-                        onClick={() => handleDelete(festify.id)}
-                      >
-                        削除
+                         <QrCode size={18} />
                       </button>
                     </div>
                   </td>
@@ -166,6 +198,13 @@ const AdminFestifyList = ({ onEdit, onViewDetails, onBack }) => {
           </tbody>
         </table>
       </div>
+
+      <QRCodeModal 
+        isOpen={!!selectedQR}
+        onClose={() => setSelectedQR(null)}
+        festifyId={selectedQR?.id}
+        title={selectedQR?.title}
+      />
 
       <div className="button-area">
         <button className="add" onClick={handleAddNew}>

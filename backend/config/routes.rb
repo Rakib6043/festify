@@ -12,7 +12,13 @@ Rails.application.routes.draw do
       # GET    /api/v1/festifies/:id
       # PATCH  /api/v1/festifies/:id
       # DELETE /api/v1/festifies/:id
-      resources :festifies
+      resources :festifies do
+        member do
+          post 'vote'
+        end
+      end
+      resources :stats, only: [:index]
+      resources :users, only: [:create, :update, :show]
     end
   end
     

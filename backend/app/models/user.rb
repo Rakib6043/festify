@@ -7,6 +7,17 @@ class User < ApplicationRecord
 
   before_save { self.email = email.downcase }
   
+  # Roles
+  ROLES = %w[admin class_rep].freeze
+
+  def admin?
+    role == 'admin'
+  end
+
+  def class_rep?
+    role == 'class_rep'
+  end
+
   # Find user by email (case insensitive)
   def self.find_by_email(email)
     find_by(email: email.downcase)

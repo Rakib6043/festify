@@ -49,10 +49,16 @@ const festifyService = {
   },
 
   // Search festifies by keyword
-  searchFestifies: async (keyword) => {
+  // Search festifies with filters
+  searchFestifies: async ({ keyword, grade, department }) => {
     try {
+      const params = new URLSearchParams();
+      if (keyword) params.append("keyword", keyword);
+      if (grade) params.append("grade", grade);
+      if (department) params.append("department", department);
+
       const response = await fetch(
-        `${API_BASE_URL}/festifies?keyword=${encodeURIComponent(keyword)}`,
+        `${API_BASE_URL}/festifies?${params.toString()}`,
         {
           method: "GET",
           headers: {
@@ -70,6 +76,29 @@ const festifyService = {
       return data;
     } catch (error) {
       console.error("Search festifies error:", error);
+      throw error;
+    }
+  },
+
+  // Vote for a festify
+  voteFestify: async (id) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/festifies/${id}/vote`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to vote");
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Vote error:", error);
       throw error;
     }
   },

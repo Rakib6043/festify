@@ -32,4 +32,10 @@ class ApplicationController < ActionController::API
       render json: { status: 'ERROR', message: 'このセクションにアクセスするにはログインが必要です' }, status: :unauthorized
     end
   end
+
+
+  # Log in the user
+  def login(user)
+    session[:user_id] = user.id
+  end
 end

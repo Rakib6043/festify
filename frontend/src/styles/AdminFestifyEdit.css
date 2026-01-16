@@ -11,13 +11,19 @@
 }
 
 .edit-container {
-  max-width: 800px;
+  max-width: 1200px; /* Wider for 2 cols */
   margin: 0 auto;
   background-color: #f5f3eb;
   padding: 30px 40px;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   border: 2px solid #e91e63;
+}
+
+.form-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
 }
 
 /* Title */
@@ -300,6 +306,11 @@
 
   .edit-section h1 {
     font-size: 24px;
+  }
+
+  .form-columns {
+    grid-template-columns: 1fr; /* Stack on mobile */
+    gap: 20px;
   }
 
   .form-group input[type="text"],

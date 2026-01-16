@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 import festifyService from "../services/festifyService";
 import "../styles/AdminFestifyEdit.css";
 
 const AdminFestifyEdit = ({ festify, onSave, onCancel }) => {
+  const { user } = useContext(AuthContext);
   const [formData, setFormData] = useState({
     title: "",
     creator: "",
@@ -43,8 +45,15 @@ const AdminFestifyEdit = ({ festify, onSave, onCancel }) => {
       setImagePreview2(festify.image2 || "");
       setImagePreview3(festify.image3 || "");
       setPlaceImagePreview(festify.place_image || "");
+    } else if (user && user.role === 'class_rep') {
+        // Create mode: pre-fill and lock for class_rep
+        setFormData(prev => ({
+            ...prev,
+            department: user.department,
+            grade: user.grade.toString()
+        }));
     }
-  }, [festify]);
+  }, [festify, user]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -72,7 +81,7 @@ const AdminFestifyEdit = ({ festify, onSave, onCancel }) => {
       const reader = new FileReader();
       reader.onloadend = () => {
         const base64String = reader.result;
-        
+
         if (imageNumber === 1) {
           setImagePreview1(base64String);
           setFormData((prev) => ({ ...prev, image1: base64String }));
@@ -90,6 +99,34 @@ const AdminFestifyEdit = ({ festify, onSave, onCancel }) => {
       };
       reader.readAsDataURL(file);
     }
+
+  };
+
+  const handleUrlChange = (e, imageNumber) => {
+    const url = e.target.value;
+    // Update preview immediately
+    if (imageNumber === 1) {
+      setImagePreview1(url);
+      setFormData((prev) => ({ ...prev, image1: url }));
+    } else if (imageNumber === 2) {
+      setImagePreview2(url);
+      setFormData((prev) => ({ ...prev, image2: url }));
+    } else if (imageNumber === 3) {
+      setImagePreview3(url);
+      setFormData((prev) => ({ ...prev, image3: url }));
+    } else if (imageNumber === "place") {
+      setPlaceImagePreview(url);
+      setFormData((prev) => ({ ...prev, place_image: url }));
+    }
+  };
+
+  const validateImageUrl = (url) => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve(true);
+      img.onerror = () => resolve(false);
+      img.src = url;
+    });
   };
 
   const removeImage = (imageNumber) => {
@@ -171,272 +208,323 @@ const AdminFestifyEdit = ({ festify, onSave, onCancel }) => {
           </div>
         )}
 
-        {/* Work Images */}
-        <div className="form-group">
-          <label>作品の画像:</label>
-          <div className="images">
-            {/* Image 1 */}
-            <div className="image-input-wrapper">
-              <label className="add-image-label">画像1</label>
-              {!imagePreview1 ? (
-                <label htmlFor="image1-upload" className="file-upload-label">
-                  <div className="upload-placeholder">
-                    <span className="upload-icon">+</span>
-                    <span className="upload-text">画像を選択</span>
-                  </div>
-                </label>
-              ) : (
-                <div className="image-preview-container">
-                  <img
-                    src={imagePreview1}
-                    alt="Preview 1"
-                    className="image-preview"
+        <div className="form-columns">
+          {/* Left Column: Text Inputs */}
+          <div className="left-column">
+            {/* Work Title */}
+            <div className="form-group">
+              <label htmlFor="title">作品名: *</label>
+              <input
+                type="text"
+                id="title"
+                name="title"
+                value={formData.title}
+                onChange={handleInputChange}
+                required
+                placeholder="作品名を入力してください"
+              />
+            </div>
+
+            {/* Creator Name */}
+            <div className="form-group">
+              <label htmlFor="creator">作成者名: *</label>
+              <input
+                type="text"
+                id="creator"
+                name="creator"
+                value={formData.creator}
+                onChange={handleInputChange}
+                required
+                placeholder="作成者名を入力してください"
+              />
+            </div>
+
+            {/* Department */}
+            <div className="form-group">
+              <label>学科:</label>
+              <div className="radio-group">
+                <div className="radio-option">
+                  <input
+                    type="radio"
+                    id="dep-design"
+                    name="department"
+                    value="デザイン科"
+                    checked={formData.department === "デザイン科"}
+                    onChange={handleInputChange}
+                    disabled={user && user.role === 'class_rep'}
                   />
-                  <button
-                    type="button"
-                    className="remove-image-btn"
-                    onClick={() => removeImage(1)}
-                  >
-                    ×
-                  </button>
+                  <label htmlFor="dep-design">デザイン科</label>
                 </div>
-              )}
-              <input
-                type="file"
-                id="image1-upload"
-                accept="image/*"
-                onChange={(e) => handleImageChange(e, 1)}
-                style={{ display: "none" }}
-              />
-            </div>
-
-            {/* Image 2 */}
-            <div className="image-input-wrapper">
-              <label className="add-image-label">画像2</label>
-              {!imagePreview2 ? (
-                <label htmlFor="image2-upload" className="file-upload-label">
-                  <div className="upload-placeholder">
-                    <span className="upload-icon">+</span>
-                    <span className="upload-text">画像を選択</span>
-                  </div>
-                </label>
-              ) : (
-                <div className="image-preview-container">
-                  <img
-                    src={imagePreview2}
-                    alt="Preview 2"
-                    className="image-preview"
+                <div className="radio-option">
+                  <input
+                    type="radio"
+                    id="dep-it"
+                    name="department"
+                    value="IT科"
+                    checked={formData.department === "IT科"}
+                    onChange={handleInputChange}
+                    disabled={user && user.role === 'class_rep'}
                   />
-                  <button
-                    type="button"
-                    className="remove-image-btn"
-                    onClick={() => removeImage(2)}
-                  >
-                    ×
-                  </button>
+                  <label htmlFor="dep-it">IT科</label>
                 </div>
-              )}
-              <input
-                type="file"
-                id="image2-upload"
-                accept="image/*"
-                onChange={(e) => handleImageChange(e, 2)}
-                style={{ display: "none" }}
-              />
-            </div>
-
-            {/* Image 3 */}
-            <div className="image-input-wrapper">
-              <label className="add-image-label">画像3</label>
-              {!imagePreview3 ? (
-                <label htmlFor="image3-upload" className="file-upload-label">
-                  <div className="upload-placeholder">
-                    <span className="upload-icon">+</span>
-                    <span className="upload-text">画像を選択</span>
-                  </div>
-                </label>
-              ) : (
-                <div className="image-preview-container">
-                  <img
-                    src={imagePreview3}
-                    alt="Preview 3"
-                    className="image-preview"
-                  />
-                  <button
-                    type="button"
-                    className="remove-image-btn"
-                    onClick={() => removeImage(3)}
-                  >
-                    ×
-                  </button>
-                </div>
-              )}
-              <input
-                type="file"
-                id="image3-upload"
-                accept="image/*"
-                onChange={(e) => handleImageChange(e, 3)}
-                style={{ display: "none" }}
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Work Title */}
-        <div className="form-group">
-          <label htmlFor="title">作品名: *</label>
-          <input
-            type="text"
-            id="title"
-            name="title"
-            value={formData.title}
-            onChange={handleInputChange}
-            required
-            placeholder="作品名を入力してください"
-          />
-        </div>
-
-        {/* Creator Name */}
-        <div className="form-group">
-          <label htmlFor="creator">作成者名: *</label>
-          <input
-            type="text"
-            id="creator"
-            name="creator"
-            value={formData.creator}
-            onChange={handleInputChange}
-            required
-            placeholder="作成者名を入力してください"
-          />
-        </div>
-
-        {/* Department */}
-        <div className="form-group">
-          <label>学科:</label>
-          <div className="radio-group">
-            <div className="radio-option">
-              <input
-                type="radio"
-                id="dep-design"
-                name="department"
-                value="デザイン科"
-                checked={formData.department === "デザイン科"}
-                onChange={handleInputChange}
-              />
-              <label htmlFor="dep-design">デザイン科</label>
-            </div>
-            <div className="radio-option">
-              <input
-                type="radio"
-                id="dep-it"
-                name="department"
-                value="IT科"
-                checked={formData.department === "IT科"}
-                onChange={handleInputChange}
-              />
-              <label htmlFor="dep-it">IT科</label>
-            </div>
-          </div>
-        </div>
-
-        {/* Grade */}
-        <div className="form-group">
-          <label>学年:</label>
-          <div className="radio-group">
-            <div className="radio-option">
-              <input
-                type="radio"
-                id="grade-1"
-                name="grade"
-                value="1"
-                checked={formData.grade === "1"}
-                onChange={handleInputChange}
-              />
-              <label htmlFor="grade-1">1年</label>
-            </div>
-            <div className="radio-option">
-              <input
-                type="radio"
-                id="grade-2"
-                name="grade"
-                value="2"
-                checked={formData.grade === "2"}
-                onChange={handleInputChange}
-              />
-              <label htmlFor="grade-2">2年</label>
-            </div>
-            <div className="radio-option">
-              <input
-                type="radio"
-                id="grade-3"
-                name="grade"
-                value="3"
-                checked={formData.grade === "3"}
-                onChange={handleInputChange}
-              />
-              <label htmlFor="grade-3">3年</label>
-            </div>
-          </div>
-        </div>
-
-        {/* Description */}
-        <div className="form-group">
-          <label htmlFor="description">説明:</label>
-          <textarea
-            id="description"
-            name="description"
-            rows="5"
-            value={formData.description}
-            onChange={handleInputChange}
-            placeholder="作品の説明を入力してください"
-          ></textarea>
-        </div>
-
-        {/* Location */}
-        <div className="form-group">
-          <label htmlFor="place_image">展示場所(画像):</label>
-          {!placeImagePreview ? (
-            <label htmlFor="place-image-upload" className="file-upload-label">
-              <div className="upload-placeholder">
-                <span className="upload-icon">+</span>
-                <span className="upload-text">場所画像を選択</span>
               </div>
-            </label>
-          ) : (
-            <div className="image-preview-container">
-              <img
-                src={placeImagePreview}
-                alt="Location Preview"
-                className="image-preview location-preview"
-              />
-              <button
-                type="button"
-                className="remove-image-btn"
-                onClick={() => removeImage("place")}
-              >
-                ×
-              </button>
             </div>
-          )}
-          <input
-            type="file"
-            id="place-image-upload"
-            accept="image/*"
-            onChange={(e) => handleImageChange(e, "place")}
-            style={{ display: "none" }}
-          />
 
-          <label htmlFor="place_text" style={{ marginTop: "15px" }}>
-            展示場所(文字):
-          </label>
-          <input
-            type="text"
-            id="place_text"
-            name="place_text"
-            value={formData.place_text}
-            onChange={handleInputChange}
-            placeholder="展示場所を入力してください"
-          />
+            {/* Grade */}
+            <div className="form-group">
+              <label>学年:</label>
+              <div className="radio-group">
+                <div className="radio-option">
+                  <input
+                    type="radio"
+                    id="grade-1"
+                    name="grade"
+                    value="1"
+                    checked={formData.grade === "1"}
+                    onChange={handleInputChange}
+                    disabled={user && user.role === 'class_rep'}
+                  />
+                  <label htmlFor="grade-1">1年</label>
+                </div>
+                <div className="radio-option">
+                  <input
+                    type="radio"
+                    id="grade-2"
+                    name="grade"
+                    value="2"
+                    checked={formData.grade === "2"}
+                    onChange={handleInputChange}
+                    disabled={user && user.role === 'class_rep'}
+                  />
+                  <label htmlFor="grade-2">2年</label>
+                </div>
+                <div className="radio-option">
+                  <input
+                    type="radio"
+                    id="grade-3"
+                    name="grade"
+                    value="3"
+                    checked={formData.grade === "3"}
+                    onChange={handleInputChange}
+                    disabled={user && user.role === 'class_rep'}
+                  />
+                  <label htmlFor="grade-3">3年</label>
+                </div>
+              </div>
+            </div>
+
+            {/* Description */}
+            <div className="form-group">
+              <label htmlFor="description">説明:</label>
+              <textarea
+                id="description"
+                name="description"
+                rows="5"
+                value={formData.description}
+                onChange={handleInputChange}
+                placeholder="作品の説明を入力してください"
+              ></textarea>
+            </div>
+
+            {/* Location Text */}
+             <div className="form-group">
+              <label htmlFor="place_text">展示場所(文字):</label>
+              <input
+                type="text"
+                id="place_text"
+                name="place_text"
+                value={formData.place_text}
+                onChange={handleInputChange}
+                placeholder="展示場所を入力してください"
+              />
+            </div>
+          </div>
+
+          {/* Right Column: Images */}
+          <div className="right-column">
+             <div className="form-group">
+              <label htmlFor="place_image">展示場所(画像):</label>
+              <div style={{ marginBottom: "10px" }}>
+                  <input 
+                    type="text" 
+                    placeholder="画像URLを入力..." 
+                    value={formData.place_image || ""}
+                    onChange={(e) => handleUrlChange(e, "place")}
+                    style={{ width: "100%", padding: "5px", marginBottom: "5px" }}
+                  />
+              </div>
+              {!placeImagePreview ? (
+                <label htmlFor="place-image-upload" className="file-upload-label">
+                  <div className="upload-placeholder">
+                    <span className="upload-icon">+</span>
+                    <span className="upload-text">場所画像を選択</span>
+                  </div>
+                </label>
+              ) : (
+                <div className="image-preview-container">
+                  <img
+                    src={placeImagePreview}
+                    alt="Location Preview"
+                    className="image-preview location-preview"
+                  />
+                  <button
+                    type="button"
+                    className="remove-image-btn"
+                    onClick={() => removeImage("place")}
+                  >
+                    ×
+                  </button>
+                </div>
+              )}
+              <input
+                type="file"
+                id="place-image-upload"
+                accept="image/*"
+                onChange={(e) => handleImageChange(e, "place")}
+                style={{ display: "none" }}
+              />
+            </div>
+
+            <div className="form-group">
+              <label>作品の画像:</label>
+              <div className="images">
+                {/* Image 1 */}
+                <div className="image-input-wrapper">
+                  <label className="add-image-label">画像1</label>
+                  <div style={{ marginBottom: "10px" }}>
+                      <input 
+                        type="text" 
+                        placeholder="画像URLを入力..." 
+                        value={formData.image1 || ""}
+                        onChange={(e) => handleUrlChange(e, 1)}
+                        style={{ width: "100%", padding: "5px", marginBottom: "5px" }}
+                      />
+                  </div>
+                  {!imagePreview1 ? (
+                    <label htmlFor="image1-upload" className="file-upload-label">
+                      <div className="upload-placeholder">
+                        <span className="upload-icon">+</span>
+                        <span className="upload-text">画像を選択</span>
+                      </div>
+                    </label>
+                  ) : (
+                    <div className="image-preview-container">
+                      <img
+                        src={imagePreview1}
+                        alt="Preview 1"
+                        className="image-preview"
+                        onError={(e) => { e.target.src = "https://via.placeholder.com/150?text=Invalid+URL"; }}
+                      />
+                      <button
+                        type="button"
+                        className="remove-image-btn"
+                        onClick={() => removeImage(1)}
+                      >
+                        ×
+                      </button>
+                    </div>
+                  )}
+                  <input
+                    type="file"
+                    id="image1-upload"
+                    accept="image/*"
+                    onChange={(e) => handleImageChange(e, 1)}
+                    style={{ display: "none" }}
+                  />
+                </div>
+    
+                {/* Image 2 */}
+                <div className="image-input-wrapper">
+                  <label className="add-image-label">画像2</label>
+                  <div style={{ marginBottom: "10px" }}>
+                      <input 
+                        type="text" 
+                        placeholder="画像URLを入力..." 
+                        value={formData.image2 || ""}
+                        onChange={(e) => handleUrlChange(e, 2)}
+                        style={{ width: "100%", padding: "5px", marginBottom: "5px" }}
+                      />
+                  </div>
+                  {!imagePreview2 ? (
+                    <label htmlFor="image2-upload" className="file-upload-label">
+                      <div className="upload-placeholder">
+                        <span className="upload-icon">+</span>
+                        <span className="upload-text">画像を選択</span>
+                      </div>
+                    </label>
+                  ) : (
+                    <div className="image-preview-container">
+                      <img
+                        src={imagePreview2}
+                        alt="Preview 2"
+                        className="image-preview"
+                        onError={(e) => { e.target.src = "https://via.placeholder.com/150?text=Invalid+URL"; }}
+                      />
+                      <button
+                        type="button"
+                        className="remove-image-btn"
+                        onClick={() => removeImage(2)}
+                      >
+                        ×
+                      </button>
+                    </div>
+                  )}
+                  <input
+                    type="file"
+                    id="image2-upload"
+                    accept="image/*"
+                    onChange={(e) => handleImageChange(e, 2)}
+                    style={{ display: "none" }}
+                  />
+                </div>
+    
+                {/* Image 3 */}
+                <div className="image-input-wrapper">
+                  <label className="add-image-label">画像3</label>
+                  <div style={{ marginBottom: "10px" }}>
+                      <input 
+                        type="text" 
+                        placeholder="画像URLを入力..." 
+                        value={formData.image3 || ""}
+                        onChange={(e) => handleUrlChange(e, 3)}
+                        style={{ width: "100%", padding: "5px", marginBottom: "5px" }}
+                      />
+                  </div>
+                  {!imagePreview3 ? (
+                    <label htmlFor="image3-upload" className="file-upload-label">
+                      <div className="upload-placeholder">
+                        <span className="upload-icon">+</span>
+                        <span className="upload-text">画像を選択</span>
+                      </div>
+                    </label>
+                  ) : (
+                    <div className="image-preview-container">
+                      <img
+                        src={imagePreview3}
+                        alt="Preview 3"
+                        className="image-preview"
+                        onError={(e) => { e.target.src = "https://via.placeholder.com/150?text=Invalid+URL"; }}
+                      />
+                      <button
+                        type="button"
+                        className="remove-image-btn"
+                        onClick={() => removeImage(3)}
+                      >
+                        ×
+                      </button>
+                    </div>
+                  )}
+                  <input
+                    type="file"
+                    id="image3-upload"
+                    accept="image/*"
+                    onChange={(e) => handleImageChange(e, 3)}
+                    style={{ display: "none" }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Action Buttons */}

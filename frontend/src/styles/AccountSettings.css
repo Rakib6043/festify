@@ -1,0 +1,76 @@
+.settings-container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.settings-card {
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  border: 1px solid #e1e1e1;
+}
+
+.settings-card h2 {
+  color: #333;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #e91e63;
+}
+
+.message {
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.message.error {
+  background: #fee;
+  color: #c33;
+  border: 1px solid #fcc;
+}
+
+.message.success {
+  background: #e6fffa;
+  color: #00796b;
+  border: 1px solid #b2dfdb;
+}
+
+.password-section {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px dashed #ddd;
+}
+
+.password-section h3 {
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 15px;
+}
+
+.save-button {
+  background: #2ed573;
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: all 0.3s;
+}
+
+.save-button:hover {
+  background: #26af61;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(46, 213, 115, 0.3);
+}
+
+.save-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none;
+}

@@ -50,13 +50,40 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const registerUser = async (userData) => {
+    try {
+        const response = await authService.register(userData);
+        if (response.logged_in) {
+            setUser(response.user);
+            setIsAuthenticated(true);
+            return { success: true };
+        }
+    } catch (error) {
+        throw error;
+    }
+  };
+
+  const updateUserProfile = async (userData) => {
+      try {
+          const response = await authService.updateProfile(userData);
+          setUser(response.user);
+          return { success: true };
+      } catch (error) {
+          throw error;
+      }
+  };
+
   const value = {
     user,
     isAuthenticated,
     loading,
     login,
     logout,
+    login,
+    logout,
     checkAuthStatus,
+    registerUser,
+    updateUserProfile,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

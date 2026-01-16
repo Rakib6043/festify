@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_25_005256) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_16_004110) do
   create_table "festifies", force: :cascade do |t|
     t.string "image1"
     t.string "image2"
@@ -24,6 +24,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_25_005256) do
     t.string "place_image"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "likes"
+    t.integer "map_x"
+    t.integer "map_y"
   end
 
   create_table "users", force: :cascade do |t|
@@ -32,5 +35,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_25_005256) do
     t.string "password_digest"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "role"
+    t.string "department"
+    t.integer "grade"
   end
 end

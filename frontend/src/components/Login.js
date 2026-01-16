@@ -1,7 +1,8 @@
 import React, { useState, useContext } from "react";
+import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import authService from "../services/authService";
-import "../styles/Login.css";
+import "../styles/Auth.css";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -46,53 +47,69 @@ const Login = () => {
   };
 
   return (
-    <div className="login-container">
-      <div className="login-card">
-        <h2>ログイン</h2>
-        <form onSubmit={handleSubmit} className="login-form">
-          {error && <div className="error-message">{error}</div>}
-
-          <div className="form-group">
-            <label htmlFor="email">メールアドレス:</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              placeholder="メールアドレスを入力してください"
-              className="form-input"
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="password">パスワード:</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              placeholder="パスワードを入力してください"
-              className="form-input"
-            />
-          </div>
-
-          <button
-            type="submit"
-            className={`login-button ${loading ? "loading" : ""}`}
-            disabled={loading}
-          >
-            {loading ? "ログイン中..." : "ログイン"}
-          </button>
-        </form>
-
-        <div className="login-footer">
-          <p>
-            アカウントをお持ちでない方は <a href="/register">新規登録</a>
+    <div className="auth-container">
+      {/* Left Hero Section */}
+      <div className="auth-hero">
+        <div className="hero-content">
+          <h1 className="hero-title">Welcome to Festify 2024</h1>
+          <p className="hero-subtitle">
+            学園祭のすべてが、ここに。<br/>
+            プロジェクトの探索、投票、そして新しい発見を。
           </p>
+        </div>
+      </div>
+
+      {/* Right Form Section */}
+      <div className="auth-form-container">
+        <div className="auth-glass-card">
+          <h2 className="auth-title">ログイン</h2>
+          <p className="auth-desc">アカウントにサインインしてください</p>
+          
+          <form onSubmit={handleSubmit} className="auth-form">
+            {error && <div className="error-message">{error}</div>}
+
+            <div className="auth-input-group">
+              <label htmlFor="email">メールアドレス</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                placeholder="name@example.com"
+                className="auth-input"
+              />
+            </div>
+
+            <div className="auth-input-group">
+              <label htmlFor="password">パスワード</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                placeholder="••••••••"
+                className="auth-input"
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="auth-button"
+              disabled={loading}
+            >
+              {loading ? "ログイン中..." : "ログイン"}
+            </button>
+          </form>
+
+          <div className="auth-footer">
+            <p>
+              アカウントをお持ちでない方は <Link to="/register">新規登録</Link>
+            </p>
+          </div>
         </div>
       </div>
     </div>
