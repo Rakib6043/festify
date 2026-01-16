@@ -103,7 +103,14 @@ class Api::V1::FestifiesController < ApplicationController
 
   # Check if class rep is creating for their own department/grade
   def correct_class_rep_params?
-    return true if festify_params[:department] == current_user.department && festify_params[:grade].to_i == current_user.grade
+    input_dept = festify_params[:department].to_s
+    input_grade = festify_params[:grade].to_i
+    user_dept = current_user.department.to_s
+    user_grade = current_user.grade.to_i
+
+    Rails.logger.info "Auth Check: Input[#{input_dept}, #{input_grade}] vs User[#{user_dept}, #{user_grade}]"
+
+    return true if input_dept == user_dept && input_grade == user_grade
     false
   end
 

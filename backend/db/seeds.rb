@@ -1,21 +1,28 @@
-# Admin User
-User.create!(
-  name: "Admin User",
-  email: "admin@festify.com",
-  password: "password",
-  password_confirmation: "password",
-  role: "admin"
-)
+puts "=== Seeding Users ==="
 
-# Class Rep User (Design Dept, Grade 2)
-User.create!(
-  name: "Class Rep User",
-  email: "user@festify.com",
-  password: "password",
-  password_confirmation: "password",
-  role: "class_rep",
-  department: "デザイン科",
-  grade: 2
-)
+# 1. Admin User
+admin = User.find_or_initialize_by(email: "admin@festify.com")
+admin.name = "Admin User"
+if admin.new_record?
+  admin.password = "password"
+  admin.password_confirmation = "password"
+end
+admin.role = "admin"
+admin.save!
 
-puts "Seeding executed successfully. Created admin@festify.com and user@festify.com with password 'password'."
+puts "✅ Admin Account: admin@festify.com / password"
+
+# 2. Class Rep User (Design Dept, Grade 2)
+user = User.find_or_initialize_by(email: "user@festify.com")
+user.name = "Class Rep User"
+if user.new_record?
+  user.password = "password"
+  user.password_confirmation = "password"
+end
+user.role = "class_rep"
+user.department = "デザイン科"
+user.grade = 2
+user.save!
+
+puts "✅ User Account: user@festify.com / password"
+puts "=== Seeding Completed ==="

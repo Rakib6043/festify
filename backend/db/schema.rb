@@ -10,18 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_16_004110) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_16_013000) do
   create_table "festifies", force: :cascade do |t|
-    t.string "image1"
-    t.string "image2"
-    t.string "image3"
+    t.text "image1"
+    t.text "image2"
+    t.text "image3"
     t.string "title"
     t.text "description"
     t.string "creator"
     t.string "department"
     t.integer "grade"
     t.string "place_text"
-    t.string "place_image"
+    t.text "place_image"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "likes"
