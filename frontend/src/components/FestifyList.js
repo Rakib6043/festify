@@ -17,11 +17,42 @@ const FestifyList = () => {
   const [isMapOpen, setIsMapOpen] = useState(false);
 
   // Load festifies when component mounts
+  // Load festifies when filters change
+  // Consolidated fetch function
+  const fetchFestifies = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      let data;
+      // If we have filters, use search endpoint
+      if (searchKeyword.trim() || grade || department) {
+          data = await festifyService.searchFestifies({
+              keyword: searchKeyword,
+              grade,
+              department,
+          });
+      } else {
+          // Otherwise fetch all
+          data = await festifyService.getAllFestifies();
+      }
+      setFestifies(data);
+    } catch (err) {
+      setError("データの読み込みに失敗しました");
+      console.error("Load festifies error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Effect to trigger fetch on filter change
   useEffect(() => {
-    const init = async () => {
-        await loadFestifies();
-        
-        // Check for permalink
+    fetchFestifies();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [grade, department]);
+
+  // Initial Check for permalink
+  useEffect(() => {
+    const checkPermalink = async () => {
         const params = new URLSearchParams(window.location.search);
         const permalinkId = params.get("id");
         if (permalinkId) {
@@ -33,49 +64,34 @@ const FestifyList = () => {
             }
         }
     };
-    init();
+    checkPermalink();
   }, []);
 
-  const loadFestifies = async () => {
-    try {
-      setLoading(true);
-      setError("");
-      const data = await festifyService.getAllFestifies();
-      setFestifies(data);
-    } catch (err) {
-      setError("フェスティファイの読み込みに失敗しました");
-      console.error("Load festifies error:", err);
-    } finally {
-      setLoading(false);
-    }
+  const handleResetFilters = () => {
+    setGrade("");
+    setDepartment("");
+    setSearchKeyword("");
+    // The useEffect will trigger fetchFestifies
   };
 
   const handleSearch = async (e) => {
     e.preventDefault();
-    if (!searchKeyword.trim() && !grade && !department) {
-      loadFestifies();
-      return;
-    }
-
-    try {
-      setLoading(true);
-      setError("");
-      const data = await festifyService.searchFestifies({
-        keyword: searchKeyword,
-        grade,
-        department,
-      });
-      setFestifies(data);
-    } catch (err) {
-      setError("検索に失敗しました");
-      console.error("Search error:", err);
-    } finally {
-      setLoading(false);
-    }
+    fetchFestifies();
   };
 
-  const handleViewDetails = (festify) => {
+  const handleViewDetails = async (festify) => {
+    // Optimistically set the summary data first so the modal opens quickly
     setSelectedFestify(festify);
+    setIsMapOpen(false);
+
+    try {
+        // Then fetch the full details
+        const fullData = await festifyService.getFestifyById(festify.id);
+        setSelectedFestify(fullData);
+    } catch (err) {
+        console.error("Failed to fetch full details", err);
+        // We still have the summary data, so it's better than nothing.
+    }
   };
 
   const handleCloseDetails = () => {
@@ -124,15 +140,15 @@ const FestifyList = () => {
       <header className="sticky-glass-header">
         <Link to="/" className="header-logo">Festify</Link>
         <Link to="/login" className="admin-login-btn">
-          <span>Admin Login</span>
+          <span>管理者ログイン</span>
           <User size={18} />
         </Link>
       </header>
 
       {/* B. Hero Section */}
       <section className="modern-hero">
-        <h1 className="hero-title-large">Khám phá Lễ hội 2025</h1>
-        <p className="hero-slogan">Sáng tạo. Đam mê. Kết nối.</p>
+        <h1 className="hero-title-large">フェスティバル2025へようこそ</h1>
+        <p className="hero-slogan">創造。情熱。つながり。</p>
       </section>
 
       {/* C. Control Bar (Search & Chips) */}
@@ -141,7 +157,7 @@ const FestifyList = () => {
           <Search className="search-icon" size={20} />
           <input
             type="text"
-            placeholder="Tìm tên tranh, lớp..."
+            placeholder="作品名、クラスで検索..."
             value={searchKeyword}
             onChange={(e) => setSearchKeyword(e.target.value)}
             className="search-pill-input"
@@ -151,9 +167,9 @@ const FestifyList = () => {
         <div className="filter-chips-scroll">
           <button 
             className={`filter-chip ${!grade && !department ? 'active' : ''}`}
-            onClick={() => { setGrade(""); setDepartment(""); setSearchKeyword(""); loadFestifies(); }}
+            onClick={handleResetFilters}
           >
-            Tất cả
+            すべて
           </button>
           <button 
             className={`filter-chip ${department === "IT科" ? 'active' : ''}`}
@@ -200,20 +216,15 @@ const FestifyList = () => {
       ) : festifies.length === 0 ? (
         <div className="empty-state">
            <span className="empty-illustration">🐱🔍</span>
-           <h3>Không tìm thấy kết quả</h3>
-           <p>Thử tìm từ khóa khác xem sao nhé!</p>
+           <h3>結果が見つかりませんでした</h3>
+           <p>別のキーワードで検索してみてください</p>
            {hasFilters && (
              <button 
                className="admin-login-btn" 
                style={{margin: '20px auto', background: '#ccc', color: 'white'}}
-               onClick={() => {
-                 setSearchKeyword("");
-                 setGrade("");
-                 setDepartment("");
-                 loadFestifies();
-               }}
+               onClick={handleResetFilters}
              >
-               Xóa bộ lọc
+               条件をクリア
              </button>
            )}
         </div>
@@ -227,9 +238,21 @@ const FestifyList = () => {
             >
               <div className="card-image-wrapper">
                  {festify.image1 ? (
-                   <img src={festify.image1} alt={festify.title} className="card-image" />
+                   <>
+                     <img 
+                        src={festify.image1} 
+                        alt={festify.title} 
+                        className="card-image"
+                        onError={(e) => {
+                            console.error("Image load error for", festify.title);
+                            e.target.style.display = 'none';
+                        }}
+                     />
+                     {/* Debug helper: Remove in production */}
+                     {/* <div style={{fontSize: '10px', color: 'gray', padding: '2px'}}>Img Size: {festify.image1.length}</div> */}
+                   </>
                  ) : (
-                   <div style={{height: '200px', background: '#eee', display: 'flex', alignItems:'center', justifyContent:'center', color:'#999'}}>No Image</div>
+                   <div style={{height: '200px', background: '#eee', display: 'flex', alignItems:'center', justifyContent:'center', color:'#999'}}>画像なし</div>
                  )}
                  <button 
                     className={`floating-like-btn ${festify.isLiked ? 'liked' : ''}`} // Assuming local state for liked visual, or just visual
@@ -243,6 +266,15 @@ const FestifyList = () => {
               </div>
               
               <div className="card-content">
+                {(festify.image2 || festify.image3) && (
+                  <div className="card-thumbnails-row">
+                    {[festify.image1, festify.image2, festify.image3].filter(Boolean).map((img, idx) => (
+                      <div key={idx} className="thumb-wrapper">
+                         <img src={img} alt="" className="card-thumb" />
+                      </div>
+                    ))}
+                  </div>
+                )}
                 <div className="card-badges">
                     <span className="badge-pill">{festify.department}</span>
                     <span className="badge-pill">{festify.grade}年</span>
@@ -250,7 +282,7 @@ const FestifyList = () => {
                 <h3 className="card-title">{festify.title}</h3>
                 <div className="card-author">
                     <Palette size={14} style={{marginRight: '4px'}} />
-                    {festify.creator || "Unknown"}
+                    {festify.creator || "不明"}
                 </div>
               </div>
             </div>
@@ -285,8 +317,17 @@ const FestifyList = () => {
             <div className="detail-content-wrapper">
                 <div className="detail-main">
                     <div className="detail-section">
-                        <h3 className="section-title">About this work</h3>
+                        <h3 className="section-title">作品について</h3>
                         <p className="detail-description">{selectedFestify.description}</p>
+                    </div>
+
+                    <div className="detail-section">
+                        <h3 className="section-title">ギャラリー</h3>
+                        <div className="detail-gallery-grid">
+                            {[selectedFestify.image1, selectedFestify.image2, selectedFestify.image3].filter(Boolean).map((img, idx) => (
+                                <img key={idx} src={img} alt={`Gallery ${idx+1}`} className="detail-gallery-img" />
+                            ))}
+                        </div>
                     </div>
 
                     <div className="detail-meta-grid">
@@ -308,10 +349,10 @@ const FestifyList = () => {
                                 <span>{selectedFestify.grade}-{selectedFestify.department === 'IT科' ? 'IT' : 'DS'}</span>
                             </div>
                         </div>
-                        <h3 className="postcard-title">Location Ticket</h3>
+                        <h3 className="postcard-title">アクセスチケット</h3>
                         <div className="postcard-content">
                             <p className="place-text">
-                                <strong>📍 Place:</strong> {selectedFestify.place_text}
+                                <strong>📍 場所:</strong> {selectedFestify.place_text}
                             </p>
                             
                             <button 
@@ -347,13 +388,13 @@ const FestifyList = () => {
         />
        )}
        
-       {/* Global Map Modal (from FAB) */}
+        {/* Global Map Modal (from FAB) */}
        {!selectedFestify && (
           <MapModal
             isOpen={isMapOpen}
             onClose={() => setIsMapOpen(false)}
             // Default center or special logic for full map
-            title="School Map"
+            title="会場マップ"
           />
        )}
     </div>

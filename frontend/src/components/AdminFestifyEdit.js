@@ -49,8 +49,8 @@ const AdminFestifyEdit = ({ festify, onSave, onCancel }) => {
         // Create mode: pre-fill and lock for class_rep
         setFormData(prev => ({
             ...prev,
-            department: user.department,
-            grade: user.grade.toString()
+            department: user.department || "",
+            grade: user.grade ? user.grade.toString() : ""
         }));
     }
   }, [festify, user]);

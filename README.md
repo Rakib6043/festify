@@ -109,35 +109,35 @@ cd backend
 rails db:migrate
 ```
 
-## 👤 Creating User Accounts
+## � User Accounts
 
-### Method 1: Rails Console (Recommended)
+The system comes with a seeding script to create default accounts.
 
-1. **Open Rails Console:**
-
+Run the seed command:
 ```bash
 cd backend
-rails console
+rails db:seed
 ```
 
-2. **Create a User:**
+This will create (or ensure exist) the following accounts:
 
-```ruby
-# Basic user creation
-User.create!(
-  email: 'user@example.com',
-  password: 'password123',
-  name: 'Your Name'
-)
+### 1. Admin Account (Administrator)
+- **Role:** `admin`
+- **Email:** `admin@festify.com`
+- **Password:** `password`
+- **Permissions:** Full access to manage all artworks, edit, delete, and view system status.
 
-# Create multiple users
-User.create!([
-  { email: 'admin@festify.com', password: 'admin123', name: 'Admin User' },
-  { email: 'test@festify.com', password: 'test123', name: 'Test User' }
-])
-```
+### 2. User Account (Class Representative)
+- **Role:** `class_rep`
+- **Email:** `user@festify.com`
+- **Password:** `password`
+- **Department:** デザイン科 (Design Dept)
+- **Grade:** 2
+- **Permissions:** Can create new artworks for their class. Can edit artworks belonging to their specific Department and Grade.
 
-3. **Verify User Creation:**
+*Note: You can run `rails db:seed` multiple times safely. It will not duplicate accounts.*
+
+## 🚀 Running the Application
 
 ```ruby
 # List all users
@@ -147,49 +147,7 @@ User.all
 User.find_by(email: 'user@example.com')
 
 # Check total users
-User.count
-```
 
-4. **Exit Console:**
-
-```ruby
-exit
-```
-
-### Method 2: Using Seeds File
-
-1. **Edit `backend/db/seeds.rb`:**
-
-```ruby
-# Create default users
-User.create!([
-  {
-    email: 'admin@festify.com',
-    password: 'admin123',
-    name: 'Admin User'
-  },
-  {
-    email: 'test@festify.com',
-    password: 'test123',
-    name: 'Test User'
-  }
-])
-
-puts "Created #{User.count} users"
-```
-
-2. **Run Seeds:**
-
-```bash
-rails db:seed
-```
-
-### Method 3: Rails Runner (One-liner)
-
-```bash
-cd backend
-rails runner "User.create!(email: 'user@example.com', password: 'password123', name: 'User Name')"
-```
 
 ### Password Requirements
 

@@ -102,6 +102,7 @@ const Register = () => {
                     value={formData.department} 
                     onChange={handleChange}
                     className="auth-input"
+                    required
                   >
                       <option value="">選択</option>
                       <option value="IT科">IT科</option>
@@ -115,6 +116,7 @@ const Register = () => {
                     value={formData.grade} 
                     onChange={handleChange}
                     className="auth-input"
+                    required
                   >
                       <option value="">選択</option>
                       <option value="1">1年</option>

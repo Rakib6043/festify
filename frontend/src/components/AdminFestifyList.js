@@ -63,6 +63,20 @@ const AdminFestifyList = ({ onEdit, onViewDetails, onBack }) => {
       return isAuthorizedToEdit(festify);
   };
 
+  const ImageWithFallback = ({ src, alt }) => {
+    return (
+        <img 
+            src={src} 
+            alt={alt} 
+            className="small-img" 
+            onError={(e) => {
+                e.target.style.display = 'none';
+                e.target.parentElement.innerText = 'Broken Img';
+            }}
+        />
+    );
+  };
+
   if (loading) {
     return (
       <div className="admin-container">
@@ -121,44 +135,28 @@ const AdminFestifyList = ({ onEdit, onViewDetails, onBack }) => {
                   <td>{festify.place_text || "N/A"}</td>
                   <td>
                     {festify.place_image ? (
-                      <img
-                        src={festify.place_image}
-                        alt="展示場所"
-                        className="small-img"
-                      />
+                        <ImageWithFallback src={festify.place_image} alt="展示場所" />
                     ) : (
                       "N/A"
                     )}
                   </td>
                   <td>
                     {festify.image1 ? (
-                      <img
-                        src={festify.image1}
-                        alt="写真1"
-                        className="small-img"
-                      />
+                        <ImageWithFallback src={festify.image1} alt="写真1" />
                     ) : (
                       "N/A"
                     )}
                   </td>
                   <td>
                     {festify.image2 ? (
-                      <img
-                        src={festify.image2}
-                        alt="写真2"
-                        className="small-img"
-                      />
+                        <ImageWithFallback src={festify.image2} alt="写真2" />
                     ) : (
                       "N/A"
                     )}
                   </td>
                   <td>
                     {festify.image3 ? (
-                      <img
-                        src={festify.image3}
-                        alt="写真3"
-                        className="small-img"
-                      />
+                        <ImageWithFallback src={festify.image3} alt="写真3" />
                     ) : (
                       "N/A"
                     )}
