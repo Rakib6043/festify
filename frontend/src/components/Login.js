@@ -51,9 +51,10 @@ const Login = () => {
       {/* Left Hero Section */}
       <div className="auth-hero">
         <div className="hero-content">
-          <h1 className="hero-title">Welcome to Festify 2024</h1>
+          <h1 className="hero-title">Welcome to Festify 2026</h1>
           <p className="hero-subtitle">
-            学園祭のすべてが、ここに。<br/>
+            学園祭のすべてが、ここに。
+            <br />
             プロジェクトの探索、投票、そして新しい発見を。
           </p>
         </div>
@@ -64,7 +65,7 @@ const Login = () => {
         <div className="auth-glass-card">
           <h2 className="auth-title">ログイン</h2>
           <p className="auth-desc">アカウントにサインインしてください</p>
-          
+
           <form onSubmit={handleSubmit} className="auth-form">
             {error && <div className="error-message">{error}</div>}
 
@@ -96,11 +97,7 @@ const Login = () => {
               />
             </div>
 
-            <button
-              type="submit"
-              className="auth-button"
-              disabled={loading}
-            >
+            <button type="submit" className="auth-button" disabled={loading}>
               {loading ? "ログイン中..." : "ログイン"}
             </button>
           </form>

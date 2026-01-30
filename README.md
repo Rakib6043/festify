@@ -114,6 +114,7 @@ rails db:migrate
 The system comes with a seeding script to create default accounts.
 
 Run the seed command:
+
 ```bash
 cd backend
 rails db:seed
@@ -122,12 +123,14 @@ rails db:seed
 This will create (or ensure exist) the following accounts:
 
 ### 1. Admin Account (Administrator)
+
 - **Role:** `admin`
 - **Email:** `admin@festify.com`
 - **Password:** `password`
 - **Permissions:** Full access to manage all artworks, edit, delete, and view system status.
 
 ### 2. User Account (Class Representative)
+
 - **Role:** `class_rep`
 - **Email:** `user@festify.com`
 - **Password:** `password`
@@ -135,11 +138,11 @@ This will create (or ensure exist) the following accounts:
 - **Grade:** 2
 - **Permissions:** Can create new artworks for their class. Can edit artworks belonging to their specific Department and Grade.
 
-*Note: You can run `rails db:seed` multiple times safely. It will not duplicate accounts.*
+_Note: You can run `rails db:seed` multiple times safely. It will not duplicate accounts._
 
 ## 🚀 Running the Application
 
-```ruby
+````ruby
 # List all users
 User.all
 
@@ -164,7 +167,7 @@ cd backend
 rails server
 # or
 rails s
-```
+````
 
 Backend will be available at: `http://localhost:3000`
 
@@ -270,33 +273,28 @@ festify/
 ### Pages Overview
 
 1. **Login Page** (`/`)
-
    - Email and password authentication
    - Japanese language UI
    - Error handling with user feedback
 
 2. **Dashboard** (after login)
-
    - User information display
    - Quick action buttons
    - Navigation to other features
 
 3. **Festify List** (User View)
-
    - Grid layout of all artworks
    - Search functionality
    - Detail modal popup
    - Responsive cards
 
 4. **Admin Panel**
-
    - Table view with all fields
    - Edit/Delete operations
    - Add new artwork
    - Image preview
 
 5. **Edit/Create Form**
-
    - Text inputs for title, creator, description
    - Radio buttons for department and grade
    - Image URL inputs with live preview
